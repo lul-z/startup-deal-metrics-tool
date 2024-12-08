@@ -90,6 +90,28 @@ export function ResultsDisplay({ results }: ResultsDisplayProps) {
               </div>
             </CardContent>
           </Card>
+
+          {results.insights && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">AI Analysis</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h4 className="font-medium text-muted-foreground mb-2">Company Overview</h4>
+                  <p className="text-sm">{results.insights.description}</p>
+                </div>
+                <div>
+                  <h4 className="font-medium text-muted-foreground mb-2">Due Diligence Checklist</h4>
+                  <ul className="list-disc pl-4 text-sm space-y-1">
+                    {results.insights.dueDiligenceChecklist.map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </CardContent>
     </div>

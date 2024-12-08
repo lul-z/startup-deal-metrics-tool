@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { dealMetricsSchema } from "../client/src/lib/schemas";
 import { industryMultiples, getIndustryMultiples } from "./config/industryMultiples";
+import { generateCompanyInsights } from "./services/openai";
 
 export function registerRoutes(app: Express) {
   app.get("/api/industries", (req, res) => {
@@ -47,6 +48,15 @@ export function registerRoutes(app: Express) {
       
       const suggestedValuation = (ebitdaValuation * ebitdaWeight) + (revenueValuation * revenueWeight);
       
+      // Generate company insights using OpenAI
+      const insights = await generateCompanyInsights(
+        data.industry,
+        suggestedValuation,
+        data.revenue,
+        data.ebitda,
+        data.growthPercentage
+      );
+      
       res.json({
         revenueMultiple,
         ebitdaMultiple,
@@ -55,6 +65,7 @@ export function registerRoutes(app: Express) {
           avgRevenueMultiple: baseRevenueMultiple,
           avgEbitdaMultiple: baseEbitdaMultiple,
         },
+        insights,
       });
     } catch (error) {
       res.status(400).json({ error: "Invalid input data" });

@@ -24,4 +24,8 @@ export type CalculationResult = {
     avgRevenueMultiple: number;
     avgEbitdaMultiple: number;
   };
+  insights?: {
+    description: string;
+    dueDiligenceChecklist: string[];
+  };
 };
