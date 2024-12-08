@@ -15,10 +15,26 @@ export function registerRoutes(app: Express) {
       const { ebitdaMultiple: baseEbitdaMultiple, revenueMultiple: baseRevenueMultiple } = 
         getIndustryMultiples(data.industry);
       
-      // Adjust multiples based on growth with diminishing returns
-      const growthAdjustment = Math.min(data.growthPercentage, 100) / 100; // Cap at 100%
-      const revenueMultiple = baseRevenueMultiple * (1 + growthAdjustment * 0.5); // 50% impact
-      const ebitdaMultiple = baseEbitdaMultiple * (1 + growthAdjustment * 0.3); // 30% impact
+      // Advanced growth adjustment with progressive scaling
+      const growthAdjustment = Math.min(Math.max(data.growthPercentage, -100), 1000) / 100;
+      let growthMultiplier;
+      
+      if (growthAdjustment <= 0) {
+        // Negative growth reduces multiples more aggressively
+        growthMultiplier = 1 + (growthAdjustment * 0.7); // 70% impact for negative growth
+      } else if (growthAdjustment <= 0.5) {
+        // First 50% growth has full impact
+        growthMultiplier = 1 + (growthAdjustment * 0.6);
+      } else if (growthAdjustment <= 1) {
+        // 50-100% growth has diminishing returns
+        growthMultiplier = 1.3 + ((growthAdjustment - 0.5) * 0.4);
+      } else {
+        // Beyond 100% growth has minimal additional impact
+        growthMultiplier = 1.5 + ((growthAdjustment - 1) * 0.1);
+      }
+      
+      const revenueMultiple = baseRevenueMultiple * growthMultiplier;
+      const ebitdaMultiple = baseEbitdaMultiple * (1 + (growthAdjustment * 0.4)); // 40% impact on EBITDA
       
       // Calculate suggested valuation using weighted average
       const revenueValuation = data.revenue * revenueMultiple;
