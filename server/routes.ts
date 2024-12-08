@@ -1,8 +1,17 @@
+/**
+ * API Routes Configuration
+ * Defines endpoints for deal metrics calculation and industry data
+ */
+
 import type { Express } from "express";
 import { dealMetricsSchema } from "../client/src/lib/schemas";
 import { industryMultiples, getIndustryMultiples } from "./config/industryMultiples";
 import { generateCompanyInsights } from "./services/openai";
 
+/**
+ * Registers all API routes for the application
+ * @param app - Express application instance
+ */
 export function registerRoutes(app: Express) {
   app.get("/api/industries", (req, res) => {
     res.json(Object.keys(industryMultiples));

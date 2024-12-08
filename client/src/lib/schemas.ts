@@ -1,5 +1,14 @@
+/**
+ * Schema Definitions
+ * Contains Zod schemas for form validation and type definitions
+ */
+
 import { z } from "zod";
 
+/**
+ * Schema for deal metrics input validation
+ * Enforces reasonable limits on input values to prevent unrealistic calculations
+ */
 export const dealMetricsSchema = z.object({
   industry: z.string().min(1, "Industry is required"),
   revenue: z.number()

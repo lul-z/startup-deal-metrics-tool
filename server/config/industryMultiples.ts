@@ -1,12 +1,25 @@
+/**
+ * Defines the structure for industry-specific valuation multiples
+ * @property ebitdaMultiple - The EBITDA multiple typical for the industry
+ * @property revenueMultiple - The revenue multiple typical for the industry
+ */
 interface IndustryMultiples {
   ebitdaMultiple: number;
   revenueMultiple: number;
 }
 
+/**
+ * Configuration object type for storing industry-specific multiples
+ * Allows dynamic lookup by industry name
+ */
 interface IndustryConfig {
   [key: string]: IndustryMultiples;
 }
 
+/**
+ * Pre-defined industry multiples based on market research and industry standards
+ * These values are used as base multipliers before growth adjustments
+ */
 export const industryMultiples: IndustryConfig = {
   "saas": {
     ebitdaMultiple: 5,

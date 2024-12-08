@@ -1,15 +1,30 @@
+/**
+ * OpenAI Integration Service
+ * Provides AI-powered company descriptions and due diligence checklists
+ */
+
 import OpenAI from 'openai';
 import { z } from 'zod';
 
+// Initialize OpenAI client with API key from environment
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+/**
+ * Structure for AI-generated content
+ * @property description - Brief company overview and valuation context
+ * @property dueDiligenceChecklist - Key points to investigate during due diligence
+ */
 export interface GeneratedContent {
   description: string;
   dueDiligenceChecklist: string[];
 }
 
+/**
+ * Validation schema for OpenAI API responses
+ * Ensures consistent structure of generated content
+ */
 const responseSchema = z.object({
   description: z.string(),
   dueDiligenceChecklist: z.array(z.string()),

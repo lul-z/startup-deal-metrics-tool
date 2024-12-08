@@ -1,3 +1,14 @@
+/**
+ * Deal Metrics Form Component
+ * Handles user input for company valuation calculations
+ * 
+ * Features:
+ * - Industry selection with predefined options
+ * - Financial metrics input (revenue, EBITDA, growth)
+ * - Real-time validation using Zod schemas
+ * - Integration with calculation API
+ */
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { dealMetricsSchema, type DealMetrics, type CalculationResult } from "@/lib/schemas";
