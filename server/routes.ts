@@ -6,14 +6,37 @@ export function registerRoutes(app: Express) {
     try {
       const data = dealMetricsSchema.parse(req.body);
       
-      // Simple calculation logic - in a real app, this would be more sophisticated
-      const baseRevenueMultiple = data.industry.toLowerCase() === "saas" ? 10 : 5;
-      const baseEbitdaMultiple = data.industry.toLowerCase() === "saas" ? 15 : 8;
+      // Enhanced calculation logic with industry-specific multiples
+      let baseRevenueMultiple;
+      let baseEbitdaMultiple;
       
-      // Adjust multiples based on growth
-      const growthAdjustment = data.growthPercentage / 100;
-      const revenueMultiple = baseRevenueMultiple * (1 + growthAdjustment);
-      const ebitdaMultiple = baseEbitdaMultiple * (1 + growthAdjustment);
+      // Set base multiples according to industry
+      switch (data.industry.toLowerCase()) {
+        case "saas":
+          baseRevenueMultiple = 10;
+          baseEbitdaMultiple = 15;
+          break;
+        case "e-commerce":
+          baseRevenueMultiple = 3;
+          baseEbitdaMultiple = 10;
+          break;
+        case "manufacturing":
+          baseRevenueMultiple = 2;
+          baseEbitdaMultiple = 8;
+          break;
+        case "services":
+          baseRevenueMultiple = 2;
+          baseEbitdaMultiple = 6;
+          break;
+        default:
+          baseRevenueMultiple = 3;
+          baseEbitdaMultiple = 8;
+      }
+      
+      // Adjust multiples based on growth with diminishing returns
+      const growthAdjustment = Math.min(data.growthPercentage, 100) / 100; // Cap at 100%
+      const revenueMultiple = baseRevenueMultiple * (1 + growthAdjustment * 0.75); // 75% impact
+      const ebitdaMultiple = baseEbitdaMultiple * (1 + growthAdjustment * 0.5); // 50% impact
       
       // Calculate suggested valuation
       const revenueValuation = data.revenue * revenueMultiple;
