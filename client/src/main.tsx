@@ -7,12 +7,22 @@ import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
 import { Home } from "./pages/Home";
 
+import { Navbar } from "./components/Navbar";
+
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route>404 Page Not Found</Route>
-    </Switch>
+    <div className="min-h-screen">
+      <Navbar />
+      <div className="container py-6">
+        <Switch>
+          <Route path="/" component={Home} />
+          <Route path="/due-diligence">Due Diligence (Coming Soon)</Route>
+          <Route path="/termsheet">Termsheet Checker (Coming Soon)</Route>
+          <Route path="/valuation">Valuation Tools (Coming Soon)</Route>
+          <Route>404 Page Not Found</Route>
+        </Switch>
+      </div>
+    </div>
   );
 }
 
