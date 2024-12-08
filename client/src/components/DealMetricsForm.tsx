@@ -11,8 +11,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 interface DealMetricsFormProps {
   onCalculated: (results: CalculationResult) => void;
@@ -20,6 +27,15 @@ interface DealMetricsFormProps {
 
 export function DealMetricsForm({ onCalculated }: DealMetricsFormProps) {
   const { toast } = useToast();
+  
+  const { data: industries } = useQuery({
+    queryKey: ["industries"],
+    queryFn: async () => {
+      const response = await fetch("/api/industries");
+      return response.json() as Promise<string[]>;
+    },
+  });
+
   const form = useForm<DealMetrics>({
     resolver: zodResolver(dealMetricsSchema),
     defaultValues: {
@@ -73,9 +89,20 @@ export function DealMetricsForm({ onCalculated }: DealMetricsFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Industry</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g. SaaS" {...field} />
-              </FormControl>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select an industry" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {industries?.map((industry) => (
+                    <SelectItem key={industry} value={industry}>
+                      {industry.charAt(0).toUpperCase() + industry.slice(1).replace('-', ' ')}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
